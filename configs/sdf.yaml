@@ -1,0 +1,68 @@
+# SDF training configuration (only the parameters consumed by main_sdf.py)
+model:
+  # Input / output dimensionality ---------------------------------
+  d_in: 3          # 3-D spatial coordinates
+  d_out: 1         # signed distance value
+  in_dim: 3        # kept for backward-compatibility with helper code
+
+  # ---------------- Encoder ----------------
+  encoding_type: dif_grid   # choices: [dif_grid, hashgrid, kplanes, hybrid-kplanes]
+
+  # DiF-Grid parameters (used when encoding_type == 'dif_grid')
+  basis_dims: [4, 4, 4, 2, 2, 2]      # channels per basis level
+  basis_resos: [32, 51, 70, 89, 108, 128]  # resolution per level
+  freq_bands: [2.0, 3.2, 4.4, 5.6, 6.8, 8.0]  # relative spatial frequency
+  basis_mapping: sawtooth              # triangle | sawtooth | sinc | trigonometric | x
+  align_corners: false                # passed to torch.grid_sample
+
+  # HashGrid parameters (only if encoding_type == 'hashgrid')
+  num_levels: 16
+  level_dim: 2
+  base_resolution: 16
+  desired_resolution: 512
+  log2_hashmap_size: 19
+
+  # K-Planes parameters (encoding_type == 'kplanes')
+  grid_nd: 2
+  feature_dim: 64
+  base_res: 128
+  multiscale_res_multipliers: [1, 2, 4]
+
+  # Hybrid K-Planes parameters (encoding_type == 'hybrid-kplanes')
+  num_features: 2
+  low_res: 16
+  high_res: 512
+
+  # ---------------- Decoder ----------------
+  decoder_type: rbf    # rbf | mlp
+
+  # RBF-decoder params (decoder_type == 'rbf')
+  n_rbfs: 64
+  num_levels: 1
+  basis_function: gaussian   # gaussian | multiquadric | ...
+  per_level: false
+
+  # MLP-decoder params (decoder_type == 'mlp')
+  num_layers: 3
+  hidden_dim: 128
+  fea_pe: 2
+
+training:
+  # number of cached batches returned by SDFDataset per epoch
+  train_size: 65
+  train_num_samples: 131072  # 2**17
+  valid_size: 5
+  valid_num_samples: 32768  # 2**15
+
+  # optimisation
+  n_iters: 40      # epochs
+
+  # visualisation / export
+  vis_mesh_res: 1024  # resolution passed to save_mesh()
+  vis_interval: 50     # iterations between visualisations
+
+  # Learning rate settings
+  lr: 1e-3                    # Initial learning rate
+  decay_rate: 0.1             # Base decay rate for StepLR scheduler (gamma = decay_rate ** (1/train_size))
+  scheduler_update_every_step: true  # Update learning rate every step instead of every epoch
+  weight_decay: 1e-4          # L2 regularization weight

@@ -1,0 +1,61 @@
+# RGB image fitting configuration
+model:
+  d_in: 2      # Normalised pixel coordinates (x,y)
+  d_out: 3     # RGB
+  in_dim: 2
+
+  # Encoder ----------------------------------------------------
+  encoding_type: dif_grid    # dif_grid | hashgrid | kplanes | hybrid-kplanes
+
+  # DiF-Grid parameters
+  basis_dims: [4,4,4,2,2,2]
+  basis_resos: [32, 51, 70, 89, 108, 128]
+  freq_bands: [2.0, 3.2, 4.4, 5.6, 6.8, 8.0]
+  basis_mapping: sawtooth
+  align_corners: false
+
+  # HashGrid (encoding_type == hashgrid)
+  num_levels: 16
+  level_dim: 2
+  base_resolution: 16
+  desired_resolution: 512
+  log2_hashmap_size: 19
+
+  # K-Planes
+  grid_nd: 2
+  feature_dim: 64
+  base_res: 128
+  multiscale_res_multipliers: [1, 2, 4]
+
+  # Hybrid K-Planes
+  num_features: 2
+  low_res: 16
+  high_res: 512
+
+  # Decoder ----------------------------------------------------
+  decoder_type: rbf
+
+  # RBF decoder
+  n_rbfs: 64
+  num_levels: 1
+  basis_function: gaussian
+  per_level: false
+
+  # MLP fallback
+  num_layers: 3
+  hidden_dim: 128
+  fea_pe: 2   # optional feature positional encoding
+
+training:
+  train_size: 15000
+  train_num_samples: 262144  # 2**18
+  valid_size: 1
+  valid_num_samples: 32768   # 2**15
+  n_iters: 1
+  vis_interval: 1
+
+  # Learning rate settings
+  lr: 1e-3                    # Initial learning rate
+  decay_rate: 0.1             # Base decay rate for StepLR scheduler (gamma = decay_rate ** (1/train_size))
+  scheduler_update_every_step: true  # Update learning rate every step instead of every epoch
+  weight_decay: 1e-4          # L2 regularization weight 
