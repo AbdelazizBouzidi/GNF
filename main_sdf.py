@@ -14,7 +14,7 @@ from loss import mape_loss
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('path', type=str)
+    parser.add_argument('mesh_file', type=str)
     parser.add_argument('--config', type=str, default='configs/sdf.yaml', help="path to config file")
     parser.add_argument('--test', action='store_true', help="test mode")
     parser.add_argument('--workspace', type=str, default='workspace')
@@ -60,9 +60,9 @@ if __name__ == '__main__':
         trainer = Trainer(t0,'ngp', model, workspace=workspace, fp16=opt.fp16, use_checkpoint='best', eval_interval=1)
         trainer.save_mesh(os.path.join(opt.workspace, 'results', 'output.ply'), resolution=1024)
     else:
-        train_dataset = SDFDataset(opt.path, size=train_size, num_samples=train_samples)
+        train_dataset = SDFDataset(opt.mesh_file, size=train_size, num_samples=train_samples)
         train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=1, shuffle=False)
-        valid_dataset = SDFDataset(opt.path, size=valid_size, num_samples=valid_samples)
+        valid_dataset = SDFDataset(opt.mesh_file, size=valid_size, num_samples=valid_samples)
         valid_loader = torch.utils.data.DataLoader(valid_dataset, batch_size=1)
 
         t0 = time.time()

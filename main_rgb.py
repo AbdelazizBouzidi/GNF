@@ -13,7 +13,7 @@ from trainer import Trainer
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('path', type=str)
+    parser.add_argument('image_file', type=str)
     parser.add_argument('--config', type=str, default='configs/rgb.yaml', help="path to config file")
     parser.add_argument('--test', action='store_true', help="test mode")
     parser.add_argument('--workspace', type=str, default='workspace')
@@ -42,13 +42,13 @@ if __name__ == '__main__':
     workspace = os.path.join('trials', opt.workspace)
     print(config)
 
-    train_dataset = ImageDataset(opt.path, size=train_size, num_samples=train_samples)
+    train_dataset = ImageDataset(opt.image_file, size=train_size, num_samples=train_samples)
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=1, shuffle=False,
                                             num_workers=8,
                                             persistent_workers=True,
                                             pin_memory=True)
     
-    valid_dataset = ImageDataset(opt.path, size=valid_size, num_samples=valid_samples)
+    valid_dataset = ImageDataset(opt.image_file, size=valid_size, num_samples=valid_samples)
     valid_loader = torch.utils.data.DataLoader(valid_dataset, batch_size=1,
                                             num_workers=8,
                                             persistent_workers=True,

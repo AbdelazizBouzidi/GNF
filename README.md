@@ -37,10 +37,10 @@ Our key contribution is a novel Radial Basis Function (RBF) decoder that offers:
 ## Usage
 ```bash
 # RGB Training
-python main_rgb.py <dataset_path> --encoder <encoder_type> --decoder rbf
+python main_rgb.py <image_file> --encoder <encoder_type> --decoder rbf
 
 # SDF Training
-python main_sdf.py <dataset_path> --encoder <encoder_type> --decoder rbf
+python main_sdf.py <mesh_file> --encoder <encoder_type> --decoder rbf
 
 # NeRF Training
 python train_per_scene.py configs/nerf.yaml defaults.expname=<scene_name> dataset.datadir=<dataset_path>
