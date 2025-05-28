@@ -25,8 +25,6 @@ if __name__ == '__main__':
     opt = parser.parse_args()
     print(opt)
 
-    seed_everything(opt.seed)
-
     # Load config (YAML with comments)
     with open(opt.config, 'r') as f:
         config = yaml.safe_load(f)

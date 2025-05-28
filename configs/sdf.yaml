@@ -19,7 +19,7 @@ model:
   num_levels: 16
   level_dim: 2
   base_resolution: 16
-  desired_resolution: 512
+  desired_resolution: 2048
   log2_hashmap_size: 19
 
   # K-Planes parameters (encoding_type == 'kplanes')
@@ -38,7 +38,7 @@ model:
 
   # RBF-decoder params (decoder_type == 'rbf')
   n_rbfs: 64
-  num_levels: 1
+  num_levels: 16
   basis_function: gaussian   # gaussian | multiquadric | ...
   per_level: false
 
@@ -59,7 +59,7 @@ training:
 
   # visualisation / export
   vis_mesh_res: 1024  # resolution passed to save_mesh()
-  vis_interval: 50     # iterations between visualisations
+  vis_interval: 10     # iterations between visualisations
 
   # Learning rate settings
   lr: 1e-3                    # Initial learning rate

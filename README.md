@@ -54,8 +54,6 @@ Install environment:
 ```sh
 conda create -n gnf python=3.9
 conda activate gnf
-conda install -c "nvidia/label/cuda-11.7.1" cuda-toolkit
-conda install pytorch==1.13.0 torchvision==0.14.0 torchaudio==0.13.0 pytorch-cuda=11.7 -c pytorch -c nvidia
 pip install -r requirements.txt 
 ```
 
@@ -81,7 +79,7 @@ If you use this codebase, please cite our work (citation coming soon).
 
 This implementation re-uses ideas and portions of code from the following open-source projects:
 
-* [autonomousvision/factor-fields](https://github.com/autonomousvision/factor-fields) – the original `FactorFields.py` implementation.
+* [autonomousvision/factor-fields](https://github.com/autonomousvision/factor-fields) – the original `FactorFields.py` implementation for radiance fields.
 * [ashawkey/torch-ngp](https://github.com/ashawkey/torch-ngp) – hash-grid CUDA encoder and training utilities.
 
 We thank the authors for releasing their code under permissive licences, which made this work possible.

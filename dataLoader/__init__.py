@@ -4,7 +4,6 @@ from .nsvf import NSVF
 from .tankstemple import TanksTempleDataset
 from .your_own_data import YourOwnDataset
 from .image import ImageDataset
-from .image_set import ImageSetDataset
 from .colmap import ColmapDataset
 from .sdf import SDFDataset
 from .blender_set import BlenderDatasetSet
@@ -19,7 +18,6 @@ dataset_dict = {'blender': BlenderDataset,
                'nsvf':NSVF,
                 'own_data':YourOwnDataset,
                 'image':ImageDataset,
-                'images':ImageSetDataset,
                 'sdf':SDFDataset,
                 'colmap':ColmapDataset,
                 'google_objs':GoogleObjsDataset,

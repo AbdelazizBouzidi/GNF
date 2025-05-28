@@ -14,7 +14,7 @@ class DiFGridEncoder(nn.Module):
         self.align_corners = config.get('align_corners', True)
         
         # Initialize basis functions
-        self.basis_functions = nn.ModuleList()
+        self.basis_functions = nn.ParameterList()
         for i in range(len(self.basis_dims)):
             if self.in_dim == 3:
                 shape = (self.basis_dims[i],) + (self.basis_resos[i],) * 3  # (C,D,H,W)
@@ -24,27 +24,31 @@ class DiFGridEncoder(nn.Module):
                 raise ValueError("DiFGridEncoder only supports in_dim 2 or 3")
 
             self.basis_functions.append(nn.Parameter(torch.randn(*shape)))
+        self.output_dim = sum(self.basis_dims)
 
     def forward(self, x):
+        # breakpoint()
         # x: [B, in_dim]
         features = []
         # Precompute full mapping tensor once (B,D,N_basis)
         aabb = torch.tensor([[-1.0] * self.in_dim, [1.0] * self.in_dim], device=x.device, dtype=x.dtype)
         freq_bands = torch.tensor(self.basis_resos, dtype=x.dtype, device=x.device)
         pts_local = _grid_mapping(x, freq_bands, aabb, self.basis_mapping)  # (B,D,N)
-
+        
         for i, basis in enumerate(self.basis_functions):
             x_mapped = pts_local[..., i]  # (B,D)
+            B = x_mapped.shape[0]
 
             if self.in_dim == 3:
-                grid = x_mapped.view(-1, 1, 1, 1, 3)
+                grid = x_mapped.view(B, 1, 1, 1, 3)  # (B,1,1,1,3)
+                basis_expanded = basis.unsqueeze(0).expand(B, -1, -1, -1, -1)  # (B,C,D,H,W)
                 feat = torch.nn.functional.grid_sample(
-                    basis.unsqueeze(0),  # (1,C,D,H,W)
+                    basis_expanded,
                     grid,
                     mode='bilinear',
                     padding_mode='border',
                     align_corners=self.align_corners
-                ).squeeze(0).squeeze(-1).squeeze(-1).squeeze(-1)  # (B,C)
+                ).squeeze(-1).squeeze(-1).squeeze(-1)  # (B,C)
             else:  # 2D
                 grid = x_mapped.view(-1, 1, 1, 2)
                 feat = torch.nn.functional.grid_sample(
@@ -147,6 +151,7 @@ def get_encoder(encoder_type, config):
         return HybridKPlanesEncoder(config)
     elif encoder_type == 'hashgrid':
         from gridencoder import GridEncoder
+        # breakpoint()
         return GridEncoder(
             input_dim=config.get('in_dim', 3),
             num_levels=config['num_levels'],

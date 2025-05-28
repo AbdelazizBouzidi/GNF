@@ -7,7 +7,6 @@ import yaml
 from models.network import NeuralFieldNetwork
 from models.encoder import get_encoder
 from models.decoder import get_decoder
-from utils import seed_everything
 from dataLoader.datasets import SDFDataset
 from trainer import Trainer
 from loss import mape_loss
@@ -25,8 +24,6 @@ if __name__ == '__main__':
 
     opt = parser.parse_args()
     print(opt)
-
-    seed_everything(opt.seed)
 
     # Load config (YAML with comments allowed)
     with open(opt.config, 'r') as f:

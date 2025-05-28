@@ -5,12 +5,10 @@ from models.gnf_fields import RBFDecoder as GNF_RBFDecoder
 class RBFDecoder(nn.Module):
     def __init__(self, config, encoder_feat_dim):
         super().__init__()
-        num_levels = config['num_levels']
-        num_features = encoder_feat_dim // num_levels if 'num_features' not in config else config['num_features']
+        num_features = encoder_feat_dim 
         self.decoder = GNF_RBFDecoder(
             n_rbfs=config['n_rbfs'],
             out_dim=config['d_out'],
-            num_levels=num_levels,
             num_features=num_features,
             basis_function=config['basis_function'],
             per_level=config.get('per_level', True),
@@ -18,7 +16,7 @@ class RBFDecoder(nn.Module):
         )
 
     def forward(self, x, features):
-        return self.decoder(x)
+        return self.decoder(x, features)
 
 class MLPDecoder(nn.Module):
     def __init__(self, config):

@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 from utils import N_to_reso
-import tinycudann as tcnn
+# import tinycudann as tcnn
 import itertools
 from typing import Sequence
 from ops.interpolation import grid_sample_wrapper
@@ -81,7 +81,7 @@ class DiFGridEncoder(nn.Module):
         return torch.cat(outputs, dim=-1)
 
 class HashGridEncoder(nn.Module):
-    """HashGrid encoding using tinycudann"""
+    """HashGrid encoding using get_encoder function"""
     def __init__(self, 
                  input_dim: int,
                  num_levels: int,
@@ -100,26 +100,18 @@ class HashGridEncoder(nn.Module):
         self.log2_hashmap_size = log2_hashmap_size
         self.per_level_scale = per_level_scale
         
-        # Initialize hash grid encoding
-        encoding_config = {
-            "otype": "HashGrid",
-            "n_levels": num_levels,
-            "n_features_per_level": num_features,
-            "log2_hashmap_size": log2_hashmap_size,
-            "base_resolution": base_resolution,
-            "per_level_scale": per_level_scale
-        }
-        
-        self.encoding = tcnn.Encoding(
-            n_input_dims=input_dim,
-            encoding_config=encoding_config
-        )
+        # Initialize hash grid encoding using get_encoder
+        self.encoding = get_encoder("hashgrid",
+                                   input_dim=input_dim,
+                                   num_levels=num_levels,
+                                   level_dim=num_features,
+                                   base_resolution=base_resolution,
+                                   desired_resolution=desired_resolution)[0]
         
         self.output_dim = num_levels * num_features
 
     def forward(self, x):
-        # Normalize input to [0, 1] range
-        x = (x + 1) / 2
+       
         return self.encoding(x)
 
 class MultiscaleTriplaneEncoder(nn.Module):

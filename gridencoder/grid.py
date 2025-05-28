@@ -101,7 +101,6 @@ class GridEncoder(nn.Module):
         # the finest resolution desired at the last level, if provided, overridee per_level_scale
         if desired_resolution is not None:
             per_level_scale = np.exp2(np.log2(desired_resolution / base_resolution) / (num_levels - 1))
-
         self.input_dim = input_dim # coord dims, 2 or 3
         self.num_levels = num_levels # num levels, each level multiply resolution by 2
         self.level_dim = level_dim # encode channels per level

@@ -31,7 +31,6 @@ import packaging
 from skimage import color
 
 from torchmetrics import PeakSignalNoiseRatio
-from loss import cie94_loss
 
 from models.utils import extract_fields, extract_geometry, custom_meshgrid
 

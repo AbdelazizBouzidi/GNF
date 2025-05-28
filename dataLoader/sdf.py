@@ -4,6 +4,7 @@ from torch.utils.data import Dataset
 import trimesh
 import pysdf
 import os
+from typing import Optional
 
 __all__ = ['SDFDataset']
 
@@ -28,7 +29,7 @@ class SDFDataset(Dataset):
     """
 
     def __init__(self, path: str, size: int = 100, num_samples: int = 2 ** 18,
-                 surface_only: bool = False, clip_sdf: float | None = None):
+                 surface_only: bool = False, clip_sdf: Optional[float] = None):
         super().__init__()
 
         assert num_samples % 8 == 0, "num_samples must be divisible by 8."

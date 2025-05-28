@@ -215,7 +215,7 @@ class RBFDecoder(nn.Module):
     - Multi-level feature processing
     - Adaptive basis function centers and widths
     """
-    def __init__(self, n_rbfs, out_dim, num_levels, num_features,
+    def __init__(self, n_rbfs, out_dim, num_features,
                  basis_function, per_level=True, device="cuda"):
         super(RBFDecoder, self).__init__()
         
@@ -223,7 +223,6 @@ class RBFDecoder(nn.Module):
         self.n_rbfs = n_rbfs
         self.output_dim = out_dim
         self.num_features = num_features
-        self.num_levels = num_levels
         self.per_level = per_level
         self.device = device
         
@@ -236,10 +235,10 @@ class RBFDecoder(nn.Module):
         # Initialize RBF parameters
         if not per_level:
             # Single-level: all features processed together
-            self._init_single_level(n_rbfs, num_features * num_levels, out_dim)
+            self._init_single_level(n_rbfs, num_features, out_dim)
         else:
             # Multi-level: features processed per level
-            self._init_multi_level(n_rbfs, num_features, num_levels, out_dim)
+            self._init_multi_level(n_rbfs, num_features, out_dim)
             
         # Set up basis function and numerical stability
         self.output_function = self._get_rbf_fn(basis_function)
@@ -298,7 +297,7 @@ class RBFDecoder(nn.Module):
         else:
             raise ValueError(f"Unsupported basis function: {basis_fn}")
 
-    def forward(self, x):
+    def forward(self, x, feats):
         """Forward pass computing RBF approximation.
         
         Args:
@@ -312,16 +311,15 @@ class RBFDecoder(nn.Module):
         # Process each level
         for i, (centers, betas, shifts) in enumerate(zip(self.centers, self.betas, self.betas_shifts)):
             # Get centers and betas for current level
-            centers = torch.cat([self.centers[j](self.indices) for j in range(i+1)], dim=-1)[..., :x.shape[1]]
-            betas = torch.exp(torch.cat([self.betas[j] for j in range(i+1)], dim=-1))[..., :x.shape[1]]
+            centers = torch.cat([self.centers[j](self.indices) for j in range(i+1)], dim=-1)[..., :feats.shape[1]]
+            betas = torch.exp(torch.cat([self.betas[j] for j in range(i+1)], dim=-1))[..., :feats.shape[1]]
             
             if not self.per_level:
                 # Single-level: process all features together
-                x_in = x
+                x_in = feats
             else:
                 # Multi-level: process features for current level
-                x_in = x[:, 0:(i + 1) * self.num_features]
-            
+                x_in = feats[:, 0:(i + 1) * self.num_features]
             # Compute RBF distances and outputs
             term1 = (x_in ** 2) @ betas.T
             term2 = x_in @ (betas * centers).T
@@ -346,7 +344,7 @@ class RBFDecoder(nn.Module):
     def extra_repr(self):
         """String representation of the module."""
         return (f"n_rbfs={self.n_rbfs}, out_dim={self.output_dim}, "
-                f"num_levels={self.num_levels}, feat_dim={self.num_features}, "
+                f"feat_dim={self.num_features}, "
                 f"per_level={self.per_level}")
 
 class GNFRenderer(torch.nn.Module):

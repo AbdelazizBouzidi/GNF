@@ -31,7 +31,6 @@ import packaging
 from skimage import color
 
 from torchmetrics import PeakSignalNoiseRatio
-from loss import cie94_loss
 
 def rgb_to_xyz(rgb):
     # Normalize RGB values to [0, 1]
