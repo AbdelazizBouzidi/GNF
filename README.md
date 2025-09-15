@@ -73,7 +73,16 @@ pip install .
 ```
 
 ## Citation
-If you use this codebase, please cite our work (citation coming soon).
+If you use this codebase, please cite our work.
+
+```
+@article{bouzidi2025gaussian,
+  title={Gaussian RBFNet: Gaussian Radial Basis Functions for Fast and Accurate Representation and Reconstruction of Neural Fields},
+  author={Bouzidi, Abdelaziz and Laga, Hamid and Wannous, Hazem},
+  journal={arXiv preprint arXiv:2503.06762},
+  year={2025}
+}
+```
 
 ## Acknowledgements
 
