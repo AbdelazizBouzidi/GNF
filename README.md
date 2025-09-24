@@ -4,6 +4,8 @@
 
 # GNF: Gaussian Neural Fields
 
+**[📄 Paper](https://arxiv.org/abs/2503.06762)** | **[🌐 Project Page](https://grbfnet.github.io/)** | 
+
 This is the official implementation of **GNF (Gaussian Neural Fields)**, featuring our novel RBF-based decoder for neural field modeling. The codebase supports various encoding methods and is designed for flexible, efficient neural field representation.
 
 ## Main Contribution: RBF Decoder
